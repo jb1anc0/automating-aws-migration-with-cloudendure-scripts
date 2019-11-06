@@ -22,10 +22,9 @@ import os
 import base64
 
 
-def update(cloud_endure, projectname, configfile):
+def update(cloud_endure, projectname):
     project_id = cloud_endure.get_project_id(projectname)
-    with open(os.path.join(sys.path[0], configfile), 'r') as ymlfile:
-        config = yaml.load(ymlfile)
+    config = cloud_endure.config
     # Update encryption key and replication server
     rep = cloud_endure.fetch_replication_conf(project_id)
     for replication in json.loads(rep.text)["items"]:

@@ -20,10 +20,13 @@ import json
 import yaml
 import os
 
-def launch(launchtype, session, headers, endpoint, HOST, project_id, configfile):
-    if launchtype == "test" or launchtype == "cutover":
-       with open(os.path.join(sys.path[0], configfile), 'r') as ymlfile:
-            config = yaml.load(ymlfile)
+def launch(launchtype, cloud_endure, project_id):
+    session = cloud_endure.session
+    headers = cloud_endure.headers
+    endpoint = cloud_endure.endpoint
+    HOST = cloud_endure.host
+
+    config = cloud_endure.config
     m = requests.get(HOST + endpoint.format('projects/{}/machines').format(project_id), headers=headers, cookies=session)
     machine_ids = []
     machine_names = []

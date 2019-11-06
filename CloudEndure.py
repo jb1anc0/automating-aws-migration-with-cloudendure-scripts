@@ -45,7 +45,9 @@ def init(arguments):
 
     # Create parser for GetBlueprint
     blueprint = subparsers.add_parser('blueprint', help='Act over Machine Blueprint in CloudEndure...')
-    blueprint.add_argument('-d', '--do', choices=['get', 'update'], help='Choose the action to do over blueprint')
+    blueprint.add_argument('-t', '--type', choices=['test', 'cutover'], required=True)
+    blueprint.add_argument('-d', '--do', choices=['get', 'update'], default='get',
+                           help='Choose the action to do over blueprint')
 
     subparsers.add_parser('project-update', help='Act over project configuration...')
 
@@ -67,24 +69,25 @@ def main(arguments):
     print("************************")
     print("* Login to CloudEndure *")
     print("************************")
-    cloud_endure = CloudEndure_manager.CloudEndure()
+    cloud_endure = CloudEndure_manager.CloudEndure(args.config)
     cloud_endure.login(args.userapitoken)
 
     if args.command == "blueprint":
         if args.do == "get":
+            print('This feature is not yet implemented, in the meanwhile you will have to do it on your own.')
             pass
         elif args.do == "update":
-            pass
+            Machine.blueprint_update(args.type, cloud_endure, args.projectname, args.dryrun)
     elif args.command == "project-update":
-        UpdateProject.update(cloud_endure, args.projectname, args.config)
+        UpdateProject.update(cloud_endure, args.projectname)
         sys.exit(4)
     elif args.command == "clean":
         Cleanup.remove(cloud_endure, args.projectname, args.config, args.dryrun)
         sys.exit(2)
     elif args.command == 'launch':
-        Machine.execute(args.type, cloud_endure, args.projectname, args.config, args.dryrun)
+        Machine.execute(args.type, cloud_endure, args.projectname, args.dryrun)
     elif args.command == 'check-status':
-        StatusCheck.check(args.type, cloud_endure, args.projectname, args.config)
+        StatusCheck.check(args.type, cloud_endure, args.projectname)
 
 
 if __name__ == '__main__':

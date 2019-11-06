@@ -21,11 +21,9 @@ import yaml
 import os
 
 
-def remove(cloud_endure, projectname, configfile, dryrun):
+def remove(cloud_endure, projectname, dryrun):
     project_id = cloud_endure.get_project_id(projectname)
-    with open(os.path.join(sys.path[0], configfile), 'r') as ymlfile:
-        config = yaml.load(ymlfile)
-
+    config = cloud_endure.config
     machines_info = cloud_endure.get_machine_list(project_id)
     launch_datetime = 'lastCutoverDateTime'
     machine_status = 0

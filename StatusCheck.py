@@ -21,11 +21,9 @@ import yaml
 import os
 
 
-def check(launchtype, cloud_endure, projectname, configfile):
+def check(launchtype, cloud_endure, projectname):
     project_id = cloud_endure.get_project_id(projectname)
-    with open(configfile, 'r') as ymlfile:
-        config = yaml.load(ymlfile)
-
+    config = cloud_endure.config
     machines_info = cloud_endure.get_machine_list(project_id)
     env = 'TEST' if launchtype == 'test' else 'PROD'
     launch_datetime = 'lastTestLaunchDateTime' if launchtype == 'test' else 'lastCutoverDateTime'

@@ -16,6 +16,9 @@
 
 import requests
 import json
+import os
+import sys
+import yaml
 
 
 class ProjectError(Exception):
@@ -31,7 +34,7 @@ class ProjectError(Exception):
 
 
 class CloudEndure:
-    def __init__(self):
+    def __init__(self, configfile):
         self.session = {}
         self.headers = {'Content-Type': 'application/json'}
         self.endpoint = '/api/latest/{}'
@@ -39,6 +42,15 @@ class CloudEndure:
         self.login_endpoint = 'login'
         self.replication_endpoint = "projects/{}/replicationConfigurations"
         self.host = 'https://console.cloudendure.com'
+        try:
+            with open(os.path.join(sys.path[0], configfile), 'r') as ymlfile:
+                self.config = yaml.load(ymlfile)
+        except OSError:
+            print("Cannot open the file " + ymlfile + " Please check permissions.")
+        except:
+            print("Unexpected error:", sys.exec_info()[0])
+        else:
+            ymlfile.close()
 
     def fetch_project(self):
         try:
