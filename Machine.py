@@ -22,16 +22,11 @@ import requests
 import json
 
 
-def blueprint_update(launchtype, cloud_endure, projectname, dryrun):
+def update_blueprint(launchtype, cloud_endure, projectname, dryrun):
     project_id = cloud_endure.get_project_id(projectname)
     # Get Machine List
     machine_list = cloud_endure.get_machine_list(project_id)
 
-    # Update Machine Blueprint
-    update(project_id, machine_list, cloud_endure, launchtype, dryrun)
-
-
-def update(project_id, machine_list, cloud_endure, launchtype, dryrun):
     if machine_list is None:
         print("ERROR: Failed to fetch the machines....")
         sys.exit(3)
@@ -60,15 +55,26 @@ def execute(launchtype, cloud_endure, projectname, dryrun):
     # Get Machine List
     machine_list = cloud_endure.get_machine_list(project_id)
 
-    # Update Machine Blueprint
+    if machine_list is None:
+        print("ERROR: Failed to fetch the machines....")
+        sys.exit(3)
+    for machine in machine_list.keys():
+        print('Machine name:{}, Machine ID:{}'.format(machine, machine_list[machine]['id']))
     try:
-        update(project_id, machine_list, cloud_endure, launchtype, dryrun)
+        # Check Target Machines
+        print("****************************")
+        print("* Checking Target machines *")
+        print("****************************")
+        CheckMachine.status(cloud_endure, project_id, launchtype, dryrun)
+
         # Launch Target machines
+        print("*****************************")
+        print("* Launching target machines *")
+        print("*****************************")
         if not dryrun:
-            print("*****************************")
-            print("* Launching target machines *")
-            print("*****************************")
             LaunchMachine.launch(launchtype, cloud_endure, project_id)
+        else:
+            print("Dry run successfully executed!")
 
     except:
         print(sys.exc_info())

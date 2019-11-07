@@ -48,8 +48,6 @@ def update(cloud_endure, projectId, machinelist, dryrun):
                             disk["type"] = "SSD"
                             tmp.append(disk)
                         blueprint["disks"] = tmp
-                    existing_subnetId = blueprint["subnetIDs"]
-                    existing_SecurityGroupIds = blueprint["securityGroupIDs"]
                     if "subnetIDs" in config[index]:
                         blueprint["subnetIDs"] = config[index]["subnetIDs"]
                     if "securitygroupIDs" in config[index]:
@@ -58,7 +56,6 @@ def update(cloud_endure, projectId, machinelist, dryrun):
                         blueprint["publicIPAction"] = config[index]["publicIPAction"]
                     if "privateIPs" in config[index]:
                         blueprint["privateIPAction"] = config[index]["privateIPs"]
-                    existing_tag = blueprint["tags"]
                     if "tags" in config[index]:
                         tags = []
                         # Update machine tags
@@ -68,26 +65,22 @@ def update(cloud_endure, projectId, machinelist, dryrun):
                             tag = {"key": config[index]["tags"][keytag], "value": config[index]["tags"][valuetag]}
                             tags.append(tag)
                         blueprint["tags"] = tags
-                    result = requests.patch(HOST + url, data=json.dumps(blueprint), headers=headers, cookies=session)
-                    if result.status_code != 200:
-                        print(
-                            "ERROR: Updating blueprint failed for machine: " + machineName + ", invalid blueprint config....")
-                        if dryrun:
-                            print("ERROR: YAML validation failed, please fix the errors in the cutover YAML file")
-                        sys.exit(4)
-                    machine_list[blueprint["machineId"]] = "updated"
-                    print("Blueprint for machine: " + machineName + " updated....")
-                    if dryrun:
-                        blueprint["subnetIDs"] = existing_subnetId
-                        blueprint["securityGroupIDs"] = existing_SecurityGroupIds
-                        blueprint["tags"] = existing_tag
+                    if not dryrun:
                         result = requests.patch(HOST + url, data=json.dumps(blueprint), headers=headers,
                                                 cookies=session)
                         if result.status_code != 200:
-                            print("ERROR: Failed to roll back subnet,SG and tags for machine: " + machineName + "....")
-                            sys.exit(5)
+                            print(
+                                "ERROR: Updating blueprint failed for machine: " + machineName + ", invalid blueprint config....")
+                            sys.exit(4)
+                        machine_list[blueprint["machineId"]] = "updated"
+                        print("Blueprint for machine: " + machineName + " updated....")
+                    else:
+                        if json.dumps(blueprint):
+                            print("Blueprint information was valid, dryrun was successfull.\n" +
+                                  "Please proceed with your update...")
                         else:
-                            print("Dryrun was successful for machine: " + machineName + "....")
+                            print("Bluprint data was incorrect, and the udate failed." +
+                                  "Please verify your data before moving forward...")
                 elif config[index]["machineName"].lower() == machineName.lower():
                     print("Error: Machine name ts, but case does not match between AWS and config...")
                     print("Value in AWS: " + machineName + ", value in config: " + config[index]["machineName"])
