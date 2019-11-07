@@ -77,7 +77,7 @@ def main(arguments):
             print('This feature is not yet implemented, in the meanwhile you will have to do it on your own.')
             pass
         elif args.do == "update":
-            Machine.blueprint_update(args.type, cloud_endure, args.projectname, args.dryrun)
+            Machine.update_blueprint(args.type, cloud_endure, args.projectname, args.dryrun)
     elif args.command == "project-update":
         UpdateProject.update(cloud_endure, args.projectname)
         sys.exit(4)
