@@ -96,10 +96,10 @@ class CloudEndure:
         remove = requests.delete(self.host + self.endpoint.format('projects/{}/machines').format(project_id),
                                  data=json.dumps(machine_data), headers=self.headers, cookies=self.session)
         if remove.status_code == 204:
-            print("Machine: " + machine['sourceProperties']['name'] + " has been removed from CloudEndure....")
+            print("Machine: " + name + " has been removed from CloudEndure....")
             status = True
         else:
-            print("Machine: " + machine['sourceProperties']['name'] + " cleanup failed....")
+            print("Machine: " + name + " cleanup failed....")
         return status
 
     def login(self, userapitoken):

@@ -82,7 +82,7 @@ def main(arguments):
         UpdateProject.update(cloud_endure, args.projectname)
         sys.exit(4)
     elif args.command == "clean":
-        Cleanup.remove(cloud_endure, args.projectname, args.config, args.dryrun)
+        Cleanup.remove(cloud_endure, args.projectname, args.dryrun)
         sys.exit(2)
     elif args.command == 'launch':
         Machine.execute(args.type, cloud_endure, args.projectname, args.dryrun)

@@ -21,23 +21,20 @@ import yaml
 import os
 
 
-def launch(launchtype, cloud_endure, project_id):
+def launch(launchtype, cloud_endure, project_id, machine_list):
     session = cloud_endure.session
     headers = cloud_endure.headers
     endpoint = cloud_endure.endpoint
     HOST = cloud_endure.host
 
-    config = cloud_endure.config
-    m = requests.get(HOST + endpoint.format('projects/{}/machines').format(project_id), headers=headers,
-                     cookies=session)
     machine_ids = []
     machine_names = []
-    for i in range(1, config["project"]["machinecount"] + 1):
-        index = "machine" + str(i)
-        for machine in json.loads(m.text)["items"]:
-            if config[index]["machineName"] == machine['sourceProperties']['name']:
-                machine_ids.append({"machineId": machine['id']})
-                machine_names.append(machine['sourceProperties']['name'])
+    config_machines = cloud_endure.config['Machines']
+
+    for machine in config_machines.keys():
+        if machine in machine_list:
+            machine_ids.append({"machineId": machine_list[machine]['id']})
+            machine_names.append(machine_list[machine]['sourceProperties']['name'])
     if launchtype == "test":
         machine_data = {'items': machine_ids, "launchType": "TEST"}
     elif launchtype == "cutover":

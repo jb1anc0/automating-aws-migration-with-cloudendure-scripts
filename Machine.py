@@ -72,7 +72,7 @@ def execute(launchtype, cloud_endure, projectname, dryrun):
         print("* Launching target machines *")
         print("*****************************")
         if not dryrun:
-            LaunchMachine.launch(launchtype, cloud_endure, project_id)
+            LaunchMachine.launch(launchtype, cloud_endure, project_id, machine_list)
         else:
             print("Dry run successfully executed!")
 
