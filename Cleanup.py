@@ -28,9 +28,9 @@ def remove(cloud_endure, projectname, dryrun):
     launch_datetime = 'lastCutoverDateTime'
     machine_status = 0
 
-    for i in range(1, config["project"]["machinecount"] + 1):
-        index = "machine" + str(i)
-        name = config[index]["machineName"]
+    config_machines = config['Machines']
+
+    for name in config_machines.keys():
         if name in machines_info.keys():
             if launch_datetime in machines_info[name]["lifeCycle"]:
                 machine_data = {'machineIDs': [machines_info[name]['id']]}
@@ -44,7 +44,7 @@ def remove(cloud_endure, projectname, dryrun):
         else:
             print("ERROR: Machine: " + name + " does not exist....")
 
-    if machine_status == config["project"]["machinecount"]:
+    if machine_status == len(config["Machines"].keys()):
         print("All Machines in the config file have been removed from CloudEndure....")
     else:
         print(

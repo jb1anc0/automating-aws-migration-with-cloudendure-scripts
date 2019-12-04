@@ -29,9 +29,7 @@ def check(launchtype, cloud_endure, projectname):
     launch_datetime = 'lastTestLaunchDateTime' if launchtype == 'test' else 'lastCutoverDateTime'
     machines_count = 0
 
-    for i in range(1, config["project"]["machinecount"] + 1):
-        index = "machine" + str(i)
-        name = config[index]["machineName"]
+    for name in config["Machines"].keys():
         if name in machines_info.keys():
             if 'lastConsistencyDateTime' not in machines_info[name]['replicationInfo'].keys():
                 print("Machine: " + name + " replication in progress, please wait for a few minutes....")
@@ -45,7 +43,7 @@ def check(launchtype, cloud_endure, projectname):
         else:
             print("ERROR: Machine: " + name + " does not exist....")
 
-    if machines_count == config["project"]["machinecount"]:
+    if machines_count == len(config["Machines"].keys()):
         print("All Machines in the config file have been migrated to the " + env + " environment....")
     else:
         print("*WARNING*: Some machines in the config file have NOT been migrated to the " + env + " environment....")
