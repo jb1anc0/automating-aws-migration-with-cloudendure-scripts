@@ -32,12 +32,23 @@ def is_file(file_name):
     return file_name
 
 
+class NormalizeKeyAction(argparse.Action):
+    def __init__(self, option_strings, dest, nargs=None, **kwargs):
+        if nargs is not None:
+            raise ValueError("nargs not allowed")
+        super(NormalizeKeyAction, self).__init__(option_strings, dest, **kwargs)
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        values = values.replace('-', '')
+        setattr(namespace, self.dest, values)
+
+
 def init(arguments):
     parser = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('-p', '--projectname', required=True)
-    parser.add_argument('-u', '--userapitoken', required=True)
+    parser.add_argument('-u', '--userapitoken', action=NormalizeKeyAction, required=True)
     parser.add_argument('-d', '--dryrun', action='store_true', default=False)
     parser.add_argument('-c', '--config', default='./config-test.yml', type=is_file, help='YML config file')
 
